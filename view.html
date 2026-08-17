@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryDock — Article Reader</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Marked & Highlight.js for Article Content -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Reading Progress Bar -->
+    <div class="reading-progress-container">
+        <div class="reading-progress-bar" id="readingProgressBar"></div>
+    </div>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                <div class="logo-content">
+                    <h2>StoryDock</h2>
+                    <p>Write. Share. Inspire.</p>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#blogs">Blogs</a></li>
+                <li><a href="create.html">Create Blog</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="project.html">Documentation</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="themeBtn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="menu-wrapper">
+                    <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div id="floatingMenu" class="floating-menu" aria-hidden="true">
+                        <div class="floating-menu-header">
+                            <h3>Quick Access</h3>
+                            <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close menu">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <a href="index.html" class="menu-link"><i class="fa-solid fa-house"></i> Home</a>
+                        <a href="index.html#blogs" class="menu-link"><i class="fa-solid fa-newspaper"></i> Browse Blogs</a>
+                        <a href="create.html" class="menu-link"><i class="fa-solid fa-pen-to-square"></i> Write Blog</a>
+                        <a href="profile.html" class="menu-link"><i class="fa-solid fa-user"></i> Author Profile</a>
+                        <a href="project.html" class="menu-link"><i class="fa-solid fa-book"></i> Documentation</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Article Display -->
+    <main class="article-page-container">
+        <div id="articleContent">
+            <!-- Rendered by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Sticky Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                    <div class="logo-content">
+                        <h2>StoryDock</h2>
+                        <p>Write. Share. Inspire.</p>
+                    </div>
+                </div>
+                <p class="footer-desc">A modern home for curious minds, passionate writers, and storytellers from all corners of the world.</p>
+            </div>
+            <div class="footer-bottom" style="border: none; padding: 0; width: 100%;">
+                <p>© 2026 StoryDock. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/firebase-service.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const blogId = urlParams.get("id");
+        const container = document.getElementById("articleContent");
+
+        let blogs = JSON.parse(localStorage.getItem("blogs")) || [];
+        const currentBlog = blogs.find(b => String(b.id) === String(blogId));
+
+        if (!currentBlog) {
+            container.innerHTML = `
+                <div class="empty" style="display: block;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h2>Article Not Found</h2>
+                    <p>The story you are looking for has been removed or does not exist.</p>
+                    <a href="index.html" class="btn" style="margin-top: 20px;">Return to Home</a>
+                </div>
+            `;
+        } else {
+            // Increment view count
+            currentBlog.views = (currentBlog.views || 0) + 1;
+            localStorage.setItem("blogs", JSON.stringify(blogs));
+
+            // Set document title
+            document.title = `${currentBlog.title} — StoryDock`;
+
+            // Setup likes & bookmarks
+            const likesKey = `likes_${currentBlog.id}`;
+            let userLikes = parseInt(localStorage.getItem(likesKey) || String(currentBlog.likes || 0), 10);
+            let hasLiked = localStorage.getItem(`has_liked_${currentBlog.id}`) === "true";
+            let bookmarks = JSON.parse(localStorage.getItem("storydock_bookmarks")) || [];
+            let isBookmarked = bookmarks.includes(String(currentBlog.id));
+
+            // Comments
+            const commentsKey = `comments_${currentBlog.id}`;
+            let comments = JSON.parse(localStorage.getItem(commentsKey)) || [
+                {
+                    id: 1,
+                    author: "Dr. Sarah Jenkins",
+                    authorRole: "Reader & Engineering Lead",
+                    text: "Exceptional analysis! The breakdown of system modularity and mental models was lucid and immediately applicable.",
+                    date: currentBlog.date,
+                    likes: 12
+                }
+            ];
+
+            // Words & Reading Time
+            const words = currentBlog.content ? currentBlog.content.trim().split(/\s+/).filter(Boolean).length : 0;
+            const readingTimeMinutes = Math.max(1, Math.ceil(words / 200));
+            const readingTimeStr = `${readingTimeMinutes} min read`;
+            const tags = currentBlog.tags && Array.isArray(currentBlog.tags) ? currentBlog.tags : [currentBlog.category];
+            const tagsHtml = tags.map(t => `<span class="blog-tag">#${t}</span>`).join(" ");
+
+            // Render Markdown
+            const renderedMarkdown = marked.parse(currentBlog.content || "");
+
+            container.innerHTML = `
+                <article class="article-wrapper">
+                    <!-- Top Navigation & Article Actions -->
+                    <div class="article-navigation-top">
+                        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to feed</a>
+                        <div class="article-action-buttons">
+                            <button class="action-btn bookmark-action-btn ${isBookmarked ? 'active' : ''}" id="articleBookmarkBtn" title="Save to reading list">
+                                <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-bookmark"></i>
+                                <span>${isBookmarked ? 'Saved' : 'Save'}</span>
+                            </button>
+                            <a href="edit.html?id=${currentBlog.id}" class="edit-btn"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                            <button class="delete-btn" onclick="deleteCurrentBlog(${currentBlog.id})"><i class="fa-solid fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+
+                    <!-- Article Header -->
+                    <header class="article-header">
+                        <div class="article-badges-row">
+                            <span class="article-category-badge">${currentBlog.category}</span>
+                            <span class="article-reading-badge"><i class="fa-regular fa-clock"></i> ${readingTimeStr}</span>
+                            <span class="article-reading-badge"><i class="fa-solid fa-eye"></i> ${currentBlog.views} views</span>
+                        </div>
+                        <h1 class="article-title">${currentBlog.title}</h1>
+                        
+                        <div class="article-meta">
+                            <div class="author-avatar-img">
+                                ${currentBlog.authorAvatar ? `<img src="${currentBlog.authorAvatar}" alt="${currentBlog.author}">` : '<i class="fa-solid fa-user"></i>'}
+                            </div>
+                            <div class="author-meta-details">
+                                <span class="meta-author">${currentBlog.author}</span>
+                                <span class="meta-role">${currentBlog.authorRole || 'Contributor'} • Published on ${currentBlog.date}</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- Text-to-Speech & Readability Controls Bar -->
+                    <div class="reader-utility-bar">
+                        <div class="audio-player-widget">
+                            <button class="tts-play-btn" id="ttsPlayBtn" title="Listen to article audio narration">
+                                <i class="fa-solid fa-volume-high"></i>
+                                <span id="ttsBtnText">Listen to Story</span>
+                            </button>
+                            <div class="tts-controls" id="ttsControls" style="display: none;">
+                                <button id="ttsPauseBtn" class="tts-control-btn" title="Pause"><i class="fa-solid fa-pause"></i></button>
+                                <button id="ttsStopBtn" class="tts-control-btn" title="Stop"><i class="fa-solid fa-stop"></i></button>
+                                <select id="ttsSpeed" class="tts-speed-select">
+                                    <option value="1">1.0x</option>
+                                    <option value="1.25">1.25x</option>
+                                    <option value="1.5">1.5x</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="typography-controls">
+                            <button class="typo-btn" id="fontDecrBtn" title="Decrease font size">A-</button>
+                            <button class="typo-btn" id="fontIncrBtn" title="Increase font size">A+</button>
+                            <button class="typo-btn" id="exportMdBtn" title="Export as Markdown"><i class="fa-solid fa-file-arrow-down"></i></button>
+                            <button class="typo-btn" id="printBtn" title="Print article"><i class="fa-solid fa-print"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Cover Image & Caption -->
+                    <div class="article-cover">
+                        <img src="${escapeAttr(currentBlog.image)}" alt="${escapeAttr(currentBlog.title)}">
+                        ${currentBlog.imageCaption ? `<figcaption class="article-cover-caption"><i class="fa-solid fa-camera"></i> ${escapeHTML(currentBlog.imageCaption)}</figcaption>` : ''}
+                    </div>
+
+                    <!-- Main Markdown Body -->
+                    <div class="article-body" id="articleBodyText">
+                        ${renderedMarkdown}
+                    </div>
+
+                    <!-- Article Tags Row -->
+                    <div class="article-tags-container">
+                        <span class="tags-label"><i class="fa-solid fa-tags"></i> Topics:</span>
+                        ${tagsHtml}
+                    </div>
+
+                    <!-- Article Footer Claps & Social Sharing -->
+                    <div class="article-footer-interactions">
+                        <button class="like-button ${hasLiked ? 'liked' : ''}" id="likeBtn" title="Clap for this story">
+                            <i class="fa-solid fa-heart"></i>
+                            <span id="likeCount">${userLikes}</span>
+                            <span class="like-label">Claps</span>
+                        </button>
+
+                        <div class="share-buttons-group">
+                            <span class="share-label">Share:</span>
+                            <button class="share-btn twitter" id="shareTwitter" title="Share on X / Twitter"><i class="fa-brands fa-x-twitter"></i></button>
+                            <button class="share-btn linkedin" id="shareLinkedIn" title="Share on LinkedIn"><i class="fa-brands fa-linkedin-in"></i></button>
+                            <button class="share-btn whatsapp" id="shareWhatsApp" title="Share on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                            <button class="share-btn copy-link" id="shareCopy" title="Copy article link"><i class="fa-solid fa-link"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Author Biography Box -->
+                    <div class="author-bio-card">
+                        <div class="bio-avatar">
+                            ${currentBlog.authorAvatar ? `<img src="${escapeAttr(currentBlog.authorAvatar)}" alt="${escapeAttr(currentBlog.author)}">` : '<i class="fa-solid fa-user-tie"></i>'}
+                        </div>
+                        <div class="bio-content">
+                            <h4>Written by ${escapeHTML(currentBlog.author)}</h4>
+                            <p class="bio-subtitle">${escapeHTML(currentBlog.authorRole || 'StoryDock Author & Thought Leader')}</p>
+                            <p class="bio-desc">Passionate about sharing high-impact ideas, technology blueprints, and actionable perspectives with the global developer community.</p>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <section class="comments-section" id="commentsSection">
+                        <h3><i class="fa-solid fa-comments"></i> Discussion & Reader Insights (<span id="commentCount">${comments.length}</span>)</h3>
+
+                        <form id="commentForm" class="comment-form">
+                            <div class="form-row">
+                                <input type="text" id="commentAuthor" placeholder="Your Name or Alias" required>
+                                <input type="text" id="commentRole" placeholder="Your Role / Occupation (Optional)">
+                            </div>
+                            <textarea id="commentText" rows="3" placeholder="Share your perspectives, questions, or feedback on this story..." required></textarea>
+                            <button type="submit" class="btn-primary" style="align-self: flex-start;">
+                                <i class="fa-solid fa-paper-plane"></i> Post Comment
+                            </button>
+                        </form>
+
+                        <div class="comments-list" id="commentsList">
+                            <!-- Injected comments -->
+                        </div>
+                    </section>
+                </article>
+
+                <!-- Related Recommended Stories -->
+                <section class="related-stories-section">
+                    <h3 class="related-title"><i class="fa-solid fa-compass"></i> Recommended Stories You Might Like</h3>
+                    <div class="related-grid" id="relatedStoriesGrid"></div>
+                </section>
+            `;
+
+            // Syntax highlighting on all code blocks
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+
+            // Reading Progress Indicator
+            function updateReadingProgress() {
+                const article = document.querySelector(".article-wrapper");
+                const bar = document.getElementById("readingProgressBar");
+                if (!article || !bar) return;
+                const rect = article.getBoundingClientRect();
+                const totalHeight = article.offsetHeight;
+                const windowHeight = window.innerHeight;
+                const scrolled = Math.max(0, -rect.top);
+                const scrollable = Math.max(1, totalHeight - windowHeight + 100);
+                const progress = Math.min(100, (scrolled / scrollable) * 100);
+                bar.style.width = `${progress}%`;
+            }
+            window.addEventListener("scroll", updateReadingProgress, { passive: true });
+            window.addEventListener("resize", updateReadingProgress);
+            updateReadingProgress();
+
+            // Bookmark Toggle
+            const bookmarkBtn = document.getElementById("articleBookmarkBtn");
+            bookmarkBtn.addEventListener("click", () => {
+                const active = window.toggleBookmark(currentBlog.id);
+                if (active) {
+                    bookmarkBtn.classList.add("active");
+                    bookmarkBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i> <span>Saved</span>';
+                } else {
+                    bookmarkBtn.classList.remove("active");
+                    bookmarkBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i> <span>Save</span>';
+                }
+            });
+
+            // Likes Handler
+            const likeBtn = document.getElementById("likeBtn");
+            const likeCount = document.getElementById("likeCount");
+
+            likeBtn.addEventListener("click", () => {
+                userLikes += 1;
+                localStorage.setItem(likesKey, userLikes);
+                localStorage.setItem(`has_liked_${currentBlog.id}`, "true");
+                likeCount.innerText = userLikes;
+                likeBtn.classList.add("liked");
+
+                // Floating heart effect
+                const heart = document.createElement("span");
+                heart.className = "floating-heart";
+                heart.innerHTML = "❤️";
+                likeBtn.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+
+                window.showToast("Thank you for clapping for this story!", "success");
+            });
+
+            // Font Size Adjuster
+            let currentFontSize = 17;
+            const articleBody = document.getElementById("articleBodyText");
+            document.getElementById("fontIncrBtn").addEventListener("click", () => {
+                if (currentFontSize < 24) {
+                    currentFontSize += 1.5;
+                    articleBody.style.fontSize = `${currentFontSize}px`;
+                }
+            });
+            document.getElementById("fontDecrBtn").addEventListener("click", () => {
+                if (currentFontSize > 13) {
+                    currentFontSize -= 1.5;
+                    articleBody.style.fontSize = `${currentFontSize}px`;
+                }
+            });
+
+            // Export Markdown
+            document.getElementById("exportMdBtn").addEventListener("click", () => {
+                const mdContent = `# ${currentBlog.title}\n\n*By ${currentBlog.author} (${currentBlog.date})*\n\n${currentBlog.content}`;
+                const blob = new Blob([mdContent], { type: "text/markdown" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${currentBlog.title.toLowerCase().replace(/[^a-z0-9]/g, "-")}.md`;
+                a.click();
+                URL.revokeObjectURL(url);
+                window.showToast("Story exported as Markdown file!", "success");
+            });
+
+            // Print
+            document.getElementById("printBtn").addEventListener("click", () => {
+                window.print();
+            });
+
+            // Social Sharing Handlers
+            const pageUrl = encodeURIComponent(window.location.href);
+            const pageTitle = encodeURIComponent(currentBlog.title);
+
+            document.getElementById("shareTwitter").addEventListener("click", () => {
+                window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}`, "_blank");
+            });
+            document.getElementById("shareLinkedIn").addEventListener("click", () => {
+                window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`, "_blank");
+            });
+            document.getElementById("shareWhatsApp").addEventListener("click", () => {
+                window.open(`https://api.whatsapp.com/send?text=${pageTitle} - ${pageUrl}`, "_blank");
+            });
+            document.getElementById("shareCopy").addEventListener("click", () => {
+                navigator.clipboard.writeText(window.location.href);
+                window.showToast("Article link copied to clipboard!", "success");
+            });
+
+            // Text-to-Speech (Web Speech API)
+            const ttsPlayBtn = document.getElementById("ttsPlayBtn");
+            const ttsControls = document.getElementById("ttsControls");
+            const ttsPauseBtn = document.getElementById("ttsPauseBtn");
+            const ttsStopBtn = document.getElementById("ttsStopBtn");
+            const ttsSpeed = document.getElementById("ttsSpeed");
+            const ttsBtnText = document.getElementById("ttsBtnText");
+
+            let synth = window.speechSynthesis;
+            let utterance = null;
+            let isPlayingAudio = false;
+
+            if ('speechSynthesis' in window) {
+                ttsPlayBtn.addEventListener("click", () => {
+                    if (synth.speaking && synth.paused) {
+                        synth.resume();
+                        isPlayingAudio = true;
+                        ttsBtnText.innerText = "Playing...";
+                        return;
+                    }
+                    if (synth.speaking) {
+                        synth.cancel();
+                    }
+
+                    const plainText = `${currentBlog.title}. By ${currentBlog.author}. ` + currentBlog.content.replace(/#|\*|`|>|\[.*?\]\(.*?\)/g, "");
+                    utterance = new SpeechSynthesisUtterance(plainText);
+                    utterance.rate = parseFloat(ttsSpeed.value);
+
+                    utterance.onend = () => {
+                        isPlayingAudio = false;
+                        ttsBtnText.innerText = "Listen to Story";
+                        ttsControls.style.display = "none";
+                    };
+
+                    synth.speak(utterance);
+                    isPlayingAudio = true;
+                    ttsBtnText.innerText = "Playing Audio...";
+                    ttsControls.style.display = "flex";
+                });
+
+                ttsPauseBtn.addEventListener("click", () => {
+                    if (synth.speaking) {
+                        if (synth.paused) {
+                            synth.resume();
+                            ttsPauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                        } else {
+                            synth.pause();
+                            ttsPauseBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                        }
+                    }
+                });
+
+                ttsStopBtn.addEventListener("click", () => {
+                    synth.cancel();
+                    isPlayingAudio = false;
+                    ttsBtnText.innerText = "Listen to Story";
+                    ttsControls.style.display = "none";
+                });
+
+                ttsSpeed.addEventListener("change", () => {
+                    if (synth.speaking) {
+                        synth.cancel();
+                        ttsPlayBtn.click();
+                    }
+                });
+            } else {
+                ttsPlayBtn.style.display = "none";
+            }
+
+            // Comments Logic
+            function renderComments() {
+                const list = document.getElementById("commentsList");
+                const countBadge = document.getElementById("commentCount");
+                countBadge.innerText = comments.length;
+
+                if (comments.length === 0) {
+                    list.innerHTML = '<div class="no-comments">No responses yet. Be the first to start the discussion!</div>';
+                    return;
+                }
+
+                list.innerHTML = comments.map(c => `
+                    <div class="comment-item" id="comment-${c.id}">
+                        <div class="comment-header">
+                            <div class="comment-author">
+                                <i class="fa-solid fa-user-circle"></i>
+                                <div>
+                                    <strong>${c.author}</strong>
+                                    ${c.authorRole ? `<span class="comment-author-role">• ${c.authorRole}</span>` : ''}
+                                </div>
+                            </div>
+                            <span class="comment-date">${c.date}</span>
+                        </div>
+                        <div class="comment-content">${c.text.replace(/\n/g, "<br>")}</div>
+                        <div class="comment-actions">
+                            <button class="comment-like-btn" onclick="likeComment(${c.id})"><i class="fa-regular fa-thumbs-up"></i> ${c.likes || 0}</button>
+                            <button class="comment-del-btn" onclick="deleteComment(${c.id})"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                `).join("");
+            }
+
+            window.likeComment = function(commentId) {
+                const c = comments.find(x => x.id === commentId);
+                if (c) {
+                    c.likes = (c.likes || 0) + 1;
+                    localStorage.setItem(commentsKey, JSON.stringify(comments));
+                    renderComments();
+                }
+            };
+
+            window.deleteComment = function(commentId) {
+                if (confirm("Delete this comment?")) {
+                    comments = comments.filter(x => x.id !== commentId);
+                    localStorage.setItem(commentsKey, JSON.stringify(comments));
+                    renderComments();
+                    window.showToast("Comment removed", "info");
+                }
+            };
+
+            renderComments();
+
+            document.getElementById("commentForm").addEventListener("submit", function(e) {
+                e.preventDefault();
+                const author = document.getElementById("commentAuthor").value.trim();
+                const role = document.getElementById("commentRole").value.trim();
+                const text = document.getElementById("commentText").value.trim();
+
+                if (!author || !text) return;
+
+                const newComment = {
+                    id: Date.now(),
+                    author: author,
+                    authorRole: role,
+                    text: text,
+                    date: "Just now",
+                    likes: 0
+                };
+
+                comments.unshift(newComment);
+                localStorage.setItem(commentsKey, JSON.stringify(comments));
+
+                document.getElementById("commentAuthor").value = "";
+                document.getElementById("commentRole").value = "";
+                document.getElementById("commentText").value = "";
+
+                renderComments();
+                window.showToast("Comment published!", "success");
+            });
+
+            // Related Stories
+            const relatedGrid = document.getElementById("relatedStoriesGrid");
+            const related = blogs.filter(b => String(b.id) !== String(currentBlog.id) && b.category === currentBlog.category).slice(0, 3);
+            const fallback = blogs.filter(b => String(b.id) !== String(currentBlog.id)).slice(0, 3);
+            const recommended = related.length > 0 ? related : fallback;
+
+            if (recommended.length > 0) {
+                relatedGrid.innerHTML = recommended.map(b => `
+                    <div class="related-card" onclick="window.location.href='view.html?id=${b.id}'">
+                        <img src="${b.image}" alt="${b.title}">
+                        <div class="related-card-content">
+                            <span class="category-pill">${b.category}</span>
+                            <h4>${b.title}</h4>
+                            <div class="related-meta">
+                                <span>${b.author}</span>
+                                <span>• ${calculateReadingTime(b.content)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join("");
+            } else {
+                document.querySelector(".related-stories-section").style.display = "none";
+            }
+        }
+
+        window.deleteCurrentBlog = function(id) {
+            if (confirm("Are you sure you want to permanently delete this blog post?")) {
+                let current = JSON.parse(localStorage.getItem("blogs")) || [];
+                current = current.filter(blog => String(blog.id) !== String(id));
+                localStorage.setItem("blogs", JSON.stringify(current));
+                window.showToast("Story deleted successfully.", "warning");
+                setTimeout(() => { window.location.href = "index.html"; }, 600);
+            }
+        };
+    </script>
+</body>
+
+</html>

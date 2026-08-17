@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryDock/homepage </title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+
+        <nav class="navbar">
+
+          <div class="logo">
+
+    <img src="assets/images/logo.svg" alt="StoryDock Logo">
+
+    <div class="logo-content">
+
+        <h2>StoryDock</h2>
+
+        <p>Write. Share. Inspire.</p>
+
+    </div>
+
+</div>
+
+            <ul class="nav-links">
+
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="#blogs">Blogs</a></li>
+                <li><a href="create.html">Create Blog</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+
+            </ul>
+
+            <div class="nav-actions">
+                <button id="themeBtn">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="menu-wrapper">
+                    <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div id="floatingMenu" class="floating-menu" aria-hidden="true">
+                    <div class="floating-menu-header">
+                        <h3>Quick Access</h3>
+                        <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close menu">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <a href="#blogs" class="menu-link">
+                        <i class="fa-solid fa-newspaper"></i>
+                        Browse Blogs
+                    </a>
+                    <a href="create.html" class="menu-link">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        Write Blog
+                    </a>
+                    <a href="#" class="menu-link">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Login
+                    </a>
+                    <a href="#about" class="menu-link">
+                        <i class="fa-solid fa-circle-info"></i>
+                        About
+                    </a>
+                    <a href="#contact" class="menu-link">
+                        <i class="fa-solid fa-envelope"></i>
+                        Contact
+                    </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+    <!-- Hero -->
+
+    <section class="hero">
+
+        <div class="hero-left">
+
+            <h1>Every Story Deserves To Be Heard.</h1>
+
+            <p>
+
+                Write your ideas, share your experiences and inspire
+                thousands through StoryDock.
+
+            </p>
+
+            <div class="hero-highlights">
+                <span>Voice your truth</span>
+                <span>Share experiences</span>
+                <span>Inspire readers</span>
+                <span>Connect hearts</span>
+            </div>
+
+            <a href="create.html" class="btn">
+                Create Blog
+            </a>
+
+        </div>
+
+        <div class="hero-right">
+
+            <div class="hero-extra-text top-left">Trending Stories</div>
+            <div class="hero-extra-text bottom-right">New Voices</div>
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800"
+                alt="Hero">
+
+        </div>
+
+    </section>
+
+
+
+    <section class="search-section">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search blogs...">
+
+    </section>
+
+
+
+    <section class="category">
+
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Technology</button>
+        <button class="category-btn">Programming</button>
+        <button class="category-btn">Travel</button>
+        <button class="category-btn">Education</button>
+        <button class="category-btn">Lifestyle</button>
+
+    </section>
+
+
+
+    <section
+        class="blog-container"
+        id="blogs">
+
+    </section>
+
+
+
+    <div
+        class="empty"
+        id="empty">
+
+        <i class="fa-solid fa-book-open"></i>
+
+        <h2>No Blogs Yet</h2>
+
+        <p>Create your first blog.</p>
+
+    </div>
+
+
+
+    <footer id="about">
+
+        <h2>StoryDock</h2>
+
+        <p>
+            Write. Share. Inspire.
+        </p>
+
+        <p id="contact">
+            © 2026 StoryDock. All Rights Reserved.
+        </p>
+
+    </footer>
+
+    <script src="assets/js/app.js"></script>
+
+</body>
+
+</html>

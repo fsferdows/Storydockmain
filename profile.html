@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Profile — StoryDock</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Marked for Markdown processing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                <div class="logo-content">
+                    <h2>StoryDock</h2>
+                    <p>Write. Share. Inspire.</p>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#blogs">Blogs</a></li>
+                <li><a href="create.html">Create Story</a></li>
+                <li><a href="profile.html" class="active">Profile</a></li>
+                <li><a href="javascript:void(0)" onclick="openAnalyticsModal()">Insights</a></li>
+                <li><a href="project.html">Architecture</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-icon-btn" onclick="openAnalyticsModal()" title="Platform Analytics & Metrics">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </button>
+
+                <button id="themeBtn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="menu-wrapper">
+                    <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div id="floatingMenu" class="floating-menu" aria-hidden="true">
+                        <div class="floating-menu-header">
+                            <h3>Quick Access</h3>
+                            <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close menu">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <a href="index.html" class="menu-link"><i class="fa-solid fa-house"></i> Home Feed</a>
+                        <a href="index.html#blogs" class="menu-link"><i class="fa-solid fa-newspaper"></i> Browse Stories</a>
+                        <a href="create.html" class="menu-link"><i class="fa-solid fa-pen-to-square"></i> Create New Story</a>
+                        <a href="profile.html" class="menu-link"><i class="fa-solid fa-id-card"></i> Author Profile</a>
+                        <a href="javascript:void(0)" onclick="openAnalyticsModal(); closeMenu();" class="menu-link"><i class="fa-solid fa-chart-pie"></i> Analytics & Insights</a>
+                        <a href="project.html" class="menu-link"><i class="fa-solid fa-book-bookmark"></i> System Blueprint</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Profile Container -->
+    <main class="profile-page-container">
+
+        <!-- Signed-out Fallback View -->
+        <section id="profileSignedOutView" class="profile-signed-out-card" style="display: none;">
+            <div class="profile-signed-out-icon">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h2 style="font-size: 24px; color: var(--secondary); margin: 0;">Author Profile & Workspace</h2>
+            <p style="color: var(--muted); max-width: 480px; line-height: 1.6; margin: 0;">
+                You are currently signed out. Sign in or create an account to view and manage your published articles, customize your public author bio, and track reader engagement.
+            </p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 8px;">
+                <button type="button" class="btn-primary" onclick="openAuthModal('login')" style="padding: 12px 24px; font-size: 14px;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Account
+                </button>
+                <button type="button" class="btn-secondary" onclick="openAuthModal('signup')" style="padding: 12px 24px; font-size: 14px;">
+                    <i class="fa-solid fa-user-plus"></i> Create Free Account
+                </button>
+            </div>
+            <!-- Quick Demo Accounts -->
+            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); width: 100%;">
+                <span style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 10px;">Or access instantly as a verified demo author:</span>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button type="button" class="demo-account-chip" onclick="quickSwitchAccount('usr_alex')">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60" alt="Alex">
+                        <span>Alex Morgan</span>
+                    </button>
+                    <button type="button" class="demo-account-chip" onclick="quickSwitchAccount('usr_maya')">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60" alt="Maya">
+                        <span>Maya Lin</span>
+                    </button>
+                    <button type="button" class="demo-account-chip" onclick="quickSwitchAccount('usr_jordan')">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60" alt="Jordan">
+                        <span>Jordan Vance</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div id="profileSignedInContainer">
+            <!-- Author Hero Card -->
+            <section class="profile-hero-card" id="profileHeroCard">
+                <div class="profile-cover-banner"></div>
+                <div class="profile-card-content">
+                    <div class="profile-header-main">
+                        <div class="profile-avatar-wrap">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250" alt="Author Avatar" class="profile-avatar-img" id="profileAvatar">
+                        </div>
+                        <div class="profile-actions-top">
+                            <button class="btn-edit-profile" id="toggleEditBtn" onclick="toggleEditProfile()">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+                            </button>
+                            <button class="btn-secondary" onclick="openAuthModal('login')" title="Switch Account">
+                                <i class="fa-solid fa-user-gear"></i> Switch User
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <h1 id="profileName">
+                            Alex Morgan
+                            <i class="fa-solid fa-circle-check profile-badge-verified" title="Verified StoryDock Author"></i>
+                        </h1>
+                        <div class="profile-role-title" id="profileRole">Principal Web Architect & Tech Essayist</div>
+                        <p class="profile-bio-text" id="profileBio">
+                            Passionate frontend engineer and system designer. Writing about micro-frontends, high-performance CSS, browser compositors, and modern web architectures.
+                        </p>
+
+                        <div class="profile-meta-chips" id="profileMetaChips">
+                            <span class="profile-chip-item" id="chipHandle"><i class="fa-solid fa-at"></i> @alexmorgan</span>
+                            <span class="profile-chip-item" id="chipLocation"><i class="fa-solid fa-location-dot"></i> San Francisco, CA</span>
+                            <span class="profile-chip-item" id="chipWebsite"><i class="fa-solid fa-globe"></i> <a href="https://github.com" target="_blank" id="profileWebLink">alexmorgan.dev</a></span>
+                            <span class="profile-chip-item"><i class="fa-solid fa-calendar-days"></i> Joined June 2026</span>
+                        </div>
+
+                        <div class="profile-social-links" id="profileSocialLinks">
+                            <a href="https://twitter.com" target="_blank" rel="noopener" class="profile-social-btn" title="Twitter / X" id="socialTwitter"><i class="fa-brands fa-x-twitter"></i></a>
+                            <a href="https://linkedin.com" target="_blank" rel="noopener" class="profile-social-btn" title="LinkedIn" id="socialLinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="https://github.com" target="_blank" rel="noopener" class="profile-social-btn" title="GitHub" id="socialGithub"><i class="fa-brands fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Edit Profile Drawer / Panel (Hidden by default) -->
+            <section class="profile-edit-drawer" id="profileEditDrawer">
+                <div class="drawer-header">
+                    <h3><i class="fa-solid fa-user-pen text-blue"></i> Edit Profile Information</h3>
+                    <button type="button" class="drawer-close-btn" onclick="toggleEditProfile()">&times;</button>
+                </div>
+
+                <form id="editProfileForm" onsubmit="handleSaveProfile(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editName">Display Name *</label>
+                            <input type="text" id="editName" class="form-input" required placeholder="Your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Professional Headline / Role *</label>
+                            <input type="text" id="editRole" class="form-input" required placeholder="e.g., Staff Engineer & Writer">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editBio">Author Bio</label>
+                        <textarea id="editBio" class="form-textarea" rows="3" placeholder="Share a few sentences about your background, interests, and publications..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editLocation">Location</label>
+                            <input type="text" id="editLocation" class="form-input" placeholder="e.g., London, UK / Remote">
+                        </div>
+                        <div class="form-group">
+                            <label for="editWebsite">Portfolio / Personal Website</label>
+                            <input type="url" id="editWebsite" class="form-input" placeholder="https://yourwebsite.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editAvatar">Avatar Image URL</label>
+                        <input type="url" id="editAvatar" class="form-input" placeholder="https://images.unsplash.com/...">
+                        <div class="avatar-selector-chips">
+                            <span style="font-size: 12px; color: var(--muted); align-self: center;">Quick Avatars:</span>
+                            <div class="avatar-chip" onclick="selectQuickAvatar('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250')">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar 1">
+                            </div>
+                            <div class="avatar-chip" onclick="selectQuickAvatar('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=250')">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Avatar 2">
+                            </div>
+                            <div class="avatar-chip" onclick="selectQuickAvatar('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=250')">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100" alt="Avatar 3">
+                            </div>
+                            <div class="avatar-chip" onclick="selectQuickAvatar('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=250')">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100" alt="Avatar 4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 20px;">
+                        <button type="button" class="btn-secondary" onclick="toggleEditProfile()">Cancel</button>
+                        <button type="submit" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Profile Changes</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Profile Statistics Row -->
+            <section class="profile-stats-row" id="profileStatsRow">
+                <div class="profile-stat-box">
+                    <div class="profile-stat-icon icon-blue">
+                        <i class="fa-solid fa-newspaper"></i>
+                    </div>
+                    <div class="profile-stat-info">
+                        <strong id="userStatStories">0</strong>
+                        <span>Authored Stories</span>
+                    </div>
+                </div>
+
+                <div class="profile-stat-box">
+                    <div class="profile-stat-icon icon-red">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <div class="profile-stat-info">
+                        <strong id="userStatLikes">0</strong>
+                        <span>Total Reader Claps</span>
+                    </div>
+                </div>
+
+                <div class="profile-stat-box">
+                    <div class="profile-stat-icon icon-green">
+                        <i class="fa-solid fa-feather"></i>
+                    </div>
+                    <div class="profile-stat-info">
+                        <strong id="userStatWords">0</strong>
+                        <span>Words Penned</span>
+                    </div>
+                </div>
+
+                <div class="profile-stat-box">
+                    <div class="profile-stat-icon icon-purple">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div class="profile-stat-info">
+                        <strong id="userStatViews">0</strong>
+                        <span>Estimated Reads</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Author's Published Stories -->
+            <section class="profile-stories-section" id="profileStoriesSection">
+                <div class="profile-stories-header">
+                    <h2><i class="fa-solid fa-book-open-reader text-blue"></i> Published Stories & Articles</h2>
+                    <a href="create.html" class="btn-primary" style="padding: 9px 20px; font-size: 13.5px;">
+                        <i class="fa-solid fa-plus"></i> Write New Story
+                    </a>
+                </div>
+
+                <!-- Feed Grid for Author's Stories -->
+                <div id="authorStoriesGrid" class="blog-container">
+                    <!-- Injected via JavaScript -->
+                </div>
+
+                <!-- Empty State if no stories -->
+                <div id="authorEmptyState" class="empty" style="display: none;">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                    <h2>No Stories Published Yet</h2>
+                    <p>Begin your writing journey on StoryDock and publish your first article today.</p>
+                    <div style="margin-top: 20px;">
+                        <a href="create.html" class="btn-primary"><i class="fa-solid fa-pen-nib"></i> Publish Story</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                    <div class="logo-content">
+                        <h2>StoryDock</h2>
+                        <p>Write. Share. Inspire.</p>
+                    </div>
+                </div>
+                <p class="footer-desc">
+                    A next-generation publishing platform and knowledge ecosystem built for thinkers, engineers, and creatives worldwide.
+                </p>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" class="social-icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="index.html">Home Feed</a></li>
+                    <li><a href="index.html#blogs">All Stories</a></li>
+                    <li><a href="create.html">Create Story</a></li>
+                    <li><a href="profile.html">Author Profile</a></li>
+                    <li><a href="javascript:void(0)" onclick="openAnalyticsModal()">Platform Insights</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Topics</h3>
+                <ul>
+                    <li><a href="index.html">Technology & Cloud</a></li>
+                    <li><a href="index.html">Programming & AI</a></li>
+                    <li><a href="index.html">Lifestyle & Design</a></li>
+                    <li><a href="index.html">Education & Research</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-newsletter">
+                <h3><i class="fa-solid fa-paper-plane text-blue"></i> StoryDock Weekly</h3>
+                <p>Curated thought leadership and engineering deep-dives straight to your inbox.</p>
+                <form id="newsletterForm" class="newsletter-form">
+                    <div class="newsletter-input-group">
+                        <input type="email" id="newsletterEmail" placeholder="Enter your work email..." required>
+                        <button type="submit" class="newsletter-submit-btn">Subscribe</button>
+                    </div>
+                    <div id="newsletterMsg" class="newsletter-feedback"></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 StoryDock Platform. Built with modern web standards and architectural rigor.</p>
+            <div class="footer-links">
+                <a href="project.html">Architecture Blueprint</a>
+                <a href="javascript:void(0)" onclick="exportDataJSON()">Export JSON</a>
+                <a href="javascript:void(0)" onclick="openAnalyticsModal()">System Stats</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/firebase-service.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        // Profile Page Specific Logic
+        function renderProfilePage() {
+            const user = typeof window.getCurrentUser === "function" ? window.getCurrentUser() : null;
+            const signedOutView = document.getElementById("profileSignedOutView");
+            const signedInContainer = document.getElementById("profileSignedInContainer");
+
+            if (!user || !user.email) {
+                if (signedOutView) signedOutView.style.display = "flex";
+                if (signedInContainer) signedInContainer.style.display = "none";
+                return;
+            }
+
+            if (signedOutView) signedOutView.style.display = "none";
+            if (signedInContainer) signedInContainer.style.display = "block";
+
+            // Populate Profile Elements
+            const nameEl = document.getElementById("profileName");
+            const roleEl = document.getElementById("profileRole");
+            const bioEl = document.getElementById("profileBio");
+            const avatarEl = document.getElementById("profileAvatar");
+            const handleEl = document.getElementById("chipHandle");
+            const locationEl = document.getElementById("chipLocation");
+            const webLinkEl = document.getElementById("profileWebLink");
+
+            if (nameEl) nameEl.innerHTML = `${escapeHTML(user.name)} <i class="fa-solid fa-circle-check profile-badge-verified" title="Verified Author"></i>`;
+            if (roleEl) roleEl.textContent = user.role || "Contributing Writer";
+            if (bioEl) bioEl.textContent = user.bio || "StoryDock contributor and passionate thinker.";
+            if (avatarEl && user.avatar) avatarEl.src = user.avatar;
+            if (handleEl) handleEl.innerHTML = `<i class="fa-solid fa-at"></i> ${escapeHTML(user.handle || user.name.toLowerCase().replace(/\s+/g, ''))}`;
+            if (locationEl) locationEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${escapeHTML(user.location || "Global")}`;
+            if (webLinkEl) {
+                if (user.website) {
+                    webLinkEl.href = user.website;
+                    webLinkEl.textContent = user.website.replace(/^https?:\/\//, '');
+                    webLinkEl.parentElement.style.display = "inline-flex";
+                } else {
+                    webLinkEl.parentElement.style.display = "none";
+                }
+            }
+
+            // Populate Form Fields
+            const editName = document.getElementById("editName");
+            const editRole = document.getElementById("editRole");
+            const editBio = document.getElementById("editBio");
+            const editLocation = document.getElementById("editLocation");
+            const editWebsite = document.getElementById("editWebsite");
+            const editAvatar = document.getElementById("editAvatar");
+
+            if (editName) editName.value = user.name || "";
+            if (editRole) editRole.value = user.role || "";
+            if (editBio) editBio.value = user.bio || "";
+            if (editLocation) editLocation.value = user.location || "";
+            if (editWebsite) editWebsite.value = user.website || "";
+            if (editAvatar) editAvatar.value = user.avatar || "";
+
+            // Calculate Author Stories & Stats
+            const allBlogs = typeof window.getBlogs === "function" ? window.getBlogs() : [];
+            const userStories = allBlogs.filter(b => 
+                (b.author && b.author.toLowerCase() === user.name.toLowerCase()) ||
+                (b.authorEmail && user.email && b.authorEmail.toLowerCase() === user.email.toLowerCase()) ||
+                (user.name === "Alex Morgan" && (!b.author || b.author === "Alex Morgan"))
+            );
+
+            // Compute statistics
+            const storiesCount = userStories.length;
+            const totalLikes = userStories.reduce((sum, b) => sum + (b.likes || parseInt(localStorage.getItem(`likes_${b.id}`) || "0", 10)), 0);
+            const totalWords = userStories.reduce((sum, b) => sum + (b.content ? b.content.split(/\s+/).length : 0), 0);
+            const totalViews = userStories.reduce((sum, b) => sum + (b.views || 0), 0);
+
+            const statStories = document.getElementById("userStatStories");
+            const statLikes = document.getElementById("userStatLikes");
+            const statWords = document.getElementById("userStatWords");
+            const statViews = document.getElementById("userStatViews");
+
+            if (statStories) statStories.textContent = storiesCount;
+            if (statLikes) statLikes.textContent = totalLikes.toLocaleString();
+            if (statWords) statWords.textContent = totalWords.toLocaleString();
+            if (statViews) statViews.textContent = (totalViews || (storiesCount * 350)).toLocaleString();
+
+            // Render Author Stories Cards
+            const grid = document.getElementById("authorStoriesGrid");
+            const emptyState = document.getElementById("authorEmptyState");
+
+            if (grid) {
+                if (userStories.length === 0) {
+                    grid.innerHTML = "";
+                    if (emptyState) emptyState.style.display = "block";
+                } else {
+                    if (emptyState) emptyState.style.display = "none";
+                    grid.innerHTML = userStories.map(blog => {
+                        const words = blog.content ? blog.content.split(/\s+/).length : 0;
+                        const readTime = Math.max(1, Math.ceil(words / 200));
+                        const likes = blog.likes || parseInt(localStorage.getItem(`likes_${blog.id}`) || "0", 10);
+                        const isBookmarked = (typeof window.getBookmarks === "function" ? window.getBookmarks() : []).includes(String(blog.id));
+                        const tags = blog.tags && Array.isArray(blog.tags) ? blog.tags : [blog.category || 'General'];
+                        const tagsHtml = tags.slice(0, 3).map(t => `<span class="blog-tag">#${escapeHTML(t)}</span>`).join(" ");
+                        const captionHtml = blog.imageCaption ? `
+                            <div class="blog-img-caption">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>${escapeHTML(blog.imageCaption)}</span>
+                            </div>
+                        ` : '';
+
+                        return `
+                            <div class="blog-card" id="blog-card-${blog.id}">
+                                <div class="blog-img">
+                                    <img src="${blog.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800'}" alt="${escapeAttr(blog.title)}" loading="lazy">
+                                    <span class="reading-time-tag"><i class="fa-regular fa-clock"></i> ${readTime} min read</span>
+                                    <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); toggleBookmark(${blog.id});" aria-label="Bookmark story" title="${isBookmarked ? 'Remove Bookmark' : 'Save Story'}">
+                                        <i class="fa-${isBookmarked ? 'solid' : 'regular'} fa-bookmark"></i>
+                                    </button>
+                                </div>
+                                ${captionHtml}
+                                <div class="blog-content">
+                                    <div class="blog-info">
+                                        <div class="meta-author">
+                                            ${blog.authorAvatar ? `<img src="${blog.authorAvatar}" class="author-mini-avatar" alt="${escapeAttr(blog.author || user.name)}">` : '<i class="fa-solid fa-user-circle"></i>'}
+                                            <span>${escapeHTML(blog.author || user.name)}</span>
+                                        </div>
+                                        <span class="category-pill">${escapeHTML(blog.category || 'General')}</span>
+                                    </div>
+
+                                    <h3 class="blog-card-title"><a href="view.html?id=${blog.id}">${escapeHTML(blog.title)}</a></h3>
+
+                                    <p class="blog-excerpt">${escapeHTML((blog.content || '').replace(/#|\*|`|>|\[.*?\]\(.*?\)/g, '').substring(0, 115))}...</p>
+                                    
+                                    <div class="blog-tags-row">
+                                        ${tagsHtml}
+                                    </div>
+
+                                    <div class="blog-stats">
+                                        <span class="stat-item" title="${likes} likes">
+                                            <i class="fa-solid fa-heart text-red"></i> ${likes}
+                                        </span>
+                                        <span class="stat-item" title="Reading time">
+                                            <i class="fa-regular fa-clock"></i> ${readTime} min
+                                        </span>
+                                        <span class="stat-item" title="Estimated Reads">
+                                            <i class="fa-solid fa-eye text-blue"></i> ${blog.views || 0}
+                                        </span>
+                                    </div>
+
+                                    <!-- Social Share Row -->
+                                    <div class="card-social-share-row">
+                                        <span class="card-share-label"><i class="fa-solid fa-share-nodes"></i> Share</span>
+                                        <div class="card-share-buttons">
+                                            <button type="button" class="card-share-btn share-twitter" onclick="event.preventDefault(); event.stopPropagation(); shareStoryToTwitter('${blog.id}', '${escapeAttr(blog.title)}')" title="Share to X / Twitter">
+                                                <i class="fa-brands fa-x-twitter"></i>
+                                            </button>
+                                            <button type="button" class="card-share-btn share-linkedin" onclick="event.preventDefault(); event.stopPropagation(); shareStoryToLinkedIn('${blog.id}', '${escapeAttr(blog.title)}')" title="Share to LinkedIn">
+                                                <i class="fa-brands fa-linkedin-in"></i>
+                                            </button>
+                                            <button type="button" class="card-share-btn share-copy" onclick="event.preventDefault(); event.stopPropagation(); copyStoryLink('${blog.id}')" title="Copy story link">
+                                                <i class="fa-solid fa-link"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="blog-actions">
+                                        <a href="view.html?id=${blog.id}" class="read-btn"><i class="fa-solid fa-book-open"></i> Read Story</a>
+                                        <a href="edit.html?id=${blog.id}" class="edit-btn" title="Edit story"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <button class="delete-btn" onclick="deleteAuthorStory('${blog.id}')" title="Delete story"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+                }
+            }
+        }
+
+        window.renderProfilePage = renderProfilePage;
+
+        function toggleEditProfile() {
+            const drawer = document.getElementById("profileEditDrawer");
+            if (!drawer) return;
+            drawer.classList.toggle("open");
+            if (drawer.classList.contains("open")) {
+                drawer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+        }
+
+        function selectQuickAvatar(url) {
+            const input = document.getElementById("editAvatar");
+            if (input) {
+                input.value = url;
+                window.showToast("Avatar template selected!", "info");
+            }
+        }
+
+        function handleSaveProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById("editName").value.trim();
+            const role = document.getElementById("editRole").value.trim();
+            const bio = document.getElementById("editBio").value.trim();
+            const location = document.getElementById("editLocation").value.trim();
+            const website = document.getElementById("editWebsite").value.trim();
+            const avatar = document.getElementById("editAvatar").value.trim();
+
+            if (!name || !role) {
+                window.showToast("Name and Professional Role are required.", "warning");
+                return;
+            }
+
+            const currentUser = typeof window.getCurrentUser === "function" ? window.getCurrentUser() : {};
+            const updated = {
+                ...currentUser,
+                name,
+                role,
+                bio,
+                location,
+                website,
+                avatar: avatar || currentUser.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250"
+            };
+
+            if (typeof window.setCurrentUser === "function") {
+                window.setCurrentUser(updated);
+            } else {
+                localStorage.setItem("storydock_auth_user", JSON.stringify(updated));
+            }
+
+            // Also update in users database
+            const db = typeof window.getUsersDB === "function" ? window.getUsersDB() : [];
+            const idx = db.findIndex(u => u.id === updated.id || u.email === updated.email);
+            if (idx >= 0) {
+                db[idx] = { ...db[idx], ...updated };
+                if (typeof window.saveUsersDB === "function") window.saveUsersDB(db);
+            }
+
+            toggleEditProfile();
+            renderProfilePage();
+            if (typeof window.renderAuthNav === "function") window.renderAuthNav();
+            window.showToast("Profile bio and details updated successfully!", "success");
+        }
+
+        function deleteAuthorStory(id) {
+            if (!confirm("Are you sure you want to permanently delete this story from your profile?")) return;
+            let all = typeof window.getBlogs === "function" ? window.getBlogs() : [];
+            all = all.filter(b => String(b.id) !== String(id));
+            if (typeof window.saveBlogs === "function") {
+                window.saveBlogs(all);
+            } else {
+                localStorage.setItem("blogs", JSON.stringify(all));
+            }
+            window.showToast("Story deleted successfully.", "warning");
+            renderProfilePage();
+        }
+
+        // Initialize on DOM ready
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProfilePage();
+        });
+    </script>
+</body>
+</html>

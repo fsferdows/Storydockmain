@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Story — StoryDock</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Marked & Highlight.js for Live Preview -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                <div class="logo-content">
+                    <h2>StoryDock</h2>
+                    <p>Write. Share. Inspire.</p>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#blogs">Blogs</a></li>
+                <li><a href="create.html">Create Blog</a></li>
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="project.html">Documentation</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="themeBtn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="menu-wrapper">
+                    <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div id="floatingMenu" class="floating-menu" aria-hidden="true">
+                        <div class="floating-menu-header">
+                            <h3>Quick Access</h3>
+                            <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close menu">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <a href="index.html" class="menu-link"><i class="fa-solid fa-house"></i> Home</a>
+                        <a href="index.html#blogs" class="menu-link"><i class="fa-solid fa-newspaper"></i> Browse Blogs</a>
+                        <a href="create.html" class="menu-link"><i class="fa-solid fa-pen-to-square"></i> Write Blog</a>
+                        <a href="profile.html" class="menu-link"><i class="fa-solid fa-user"></i> Author Profile</a>
+                        <a href="project.html" class="menu-link"><i class="fa-solid fa-book"></i> Documentation</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Edit Form Section -->
+    <main class="form-page-container">
+        <div class="form-card">
+            <div class="form-header">
+                <a href="index.html" class="back-link" id="backLinkDynamic"><i class="fa-solid fa-arrow-left"></i> Back to article</a>
+                <h1>Edit Story</h1>
+                <p>Modify story metadata, category tags, markdown content, or cover photography.</p>
+            </div>
+
+            <form id="editBlogForm">
+                <div class="form-group">
+                    <label for="title">Story Title *</label>
+                    <input type="text" id="title" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="author">Author Name *</label>
+                        <input type="text" id="author" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" required>
+                            <option value="Technology">Technology</option>
+                            <option value="Programming">Programming</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Education">Education</option>
+                            <option value="Lifestyle">Lifestyle</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tagsInput">Tags (Comma-separated)</label>
+                    <input type="text" id="tagsInput" placeholder="e.g. Architecture, WebDev, TypeScript">
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Cover Image URL *</label>
+                    <input type="url" id="image" required>
+                    
+                    <div class="preset-covers-wrapper">
+                        <span class="preset-label"><i class="fa-solid fa-wand-magic-sparkles"></i> Preset covers:</span>
+                        <div class="preset-chips">
+                            <button type="button" class="preset-chip" data-url="https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200">Tech Circuit</button>
+                            <button type="button" class="preset-chip" data-url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200">Code Screen</button>
+                            <button type="button" class="preset-chip" data-url="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200">Design Studio</button>
+                            <button type="button" class="preset-chip" data-url="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1200">Mountain Alpine</button>
+                            <button type="button" class="preset-chip" data-url="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=1200">Zen Mindfulness</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageCaption">Featured Image Caption (Optional)</label>
+                    <input type="text" id="imageCaption" placeholder="e.g. Conceptual visualization of high-throughput micro-frontend mesh networks">
+                    <span class="form-hint">Displayed directly underneath your featured cover photography in the feed and reader.</span>
+                </div>
+
+                <div class="image-preview-container" id="imagePreviewContainer">
+                    <img id="imagePreview" src="" alt="Cover Image Preview">
+                    <div id="imagePreviewCaption" class="blog-img-caption" style="display: none; border-radius: 0 0 12px 12px;">
+                        <i class="fa-solid fa-camera"></i>
+                        <span id="imagePreviewCaptionText"></span>
+                    </div>
+                </div>
+
+                <!-- Markdown Formatting Toolbar & Content Area -->
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
+                        <label for="content">Story Content (Markdown Supported) *</label>
+                        <div class="content-header-stats">
+                            <span id="wordCountDisplay"><i class="fa-solid fa-font"></i> 0 words</span>
+                            <span id="readTimeDisplay"><i class="fa-regular fa-clock"></i> ~1 min read</span>
+                        </div>
+                    </div>
+
+                    <!-- Editor Tabs & Toolbar -->
+                    <div class="editor-tabs-bar">
+                        <div class="editor-tabs">
+                            <button type="button" class="editor-tab active" id="tabWrite"><i class="fa-solid fa-pen"></i> Write</button>
+                            <button type="button" class="editor-tab" id="tabPreview"><i class="fa-solid fa-eye"></i> Live Preview</button>
+                        </div>
+                        
+                        <div class="markdown-toolbar" id="markdownToolbar">
+                            <button type="button" class="tool-btn" data-syntax="**" data-wrap="true" title="Bold"><i class="fa-solid fa-bold"></i></button>
+                            <button type="button" class="tool-btn" data-syntax="*" data-wrap="true" title="Italic"><i class="fa-solid fa-italic"></i></button>
+                            <button type="button" class="tool-btn" data-syntax="## " title="Heading 2"><i class="fa-solid fa-heading"></i>2</button>
+                            <button type="button" class="tool-btn" data-syntax="### " title="Heading 3"><i class="fa-solid fa-heading"></i>3</button>
+                            <button type="button" class="tool-btn" data-syntax="> " title="Quote"><i class="fa-solid fa-quote-left"></i></button>
+                            <button type="button" class="tool-btn" data-syntax="```typescript\n\n```" data-cursor-offset="14" title="Code Block"><i class="fa-solid fa-code"></i></button>
+                            <button type="button" class="tool-btn" data-syntax="- " title="Bullet List"><i class="fa-solid fa-list-ul"></i></button>
+                            <button type="button" class="tool-btn" data-syntax="1. " title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+                            <button type="button" class="tool-btn" data-syntax="[Link Text](https://example.com)" title="Link"><i class="fa-solid fa-link"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="writePane">
+                        <textarea id="content" rows="12" required></textarea>
+                    </div>
+
+                    <div id="previewPane" class="live-preview-pane" style="display: none;">
+                        <div id="previewContent" class="article-body"></div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveChangesBtn">
+                        <i class="fa-solid fa-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Sticky Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                    <div class="logo-content">
+                        <h2>StoryDock</h2>
+                        <p>Write. Share. Inspire.</p>
+                    </div>
+                </div>
+                <p class="footer-desc">Empowering writers and developers to share their stories with elegance, precision, and global reach.</p>
+            </div>
+            <div class="footer-bottom" style="border: none; padding: 0; width: 100%;">
+                <p>© 2026 StoryDock. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/firebase-service.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const blogId = urlParams.get("id");
+
+        const titleInput = document.getElementById("title");
+        const authorInput = document.getElementById("author");
+        const categoryInput = document.getElementById("category");
+        const tagsInput = document.getElementById("tagsInput");
+        const imageInput = document.getElementById("image");
+        const imageCaptionInput = document.getElementById("imageCaption");
+        const contentInput = document.getElementById("content");
+        const imagePreviewContainer = document.getElementById("imagePreviewContainer");
+        const imagePreview = document.getElementById("imagePreview");
+        const imagePreviewCaption = document.getElementById("imagePreviewCaption");
+        const imagePreviewCaptionText = document.getElementById("imagePreviewCaptionText");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const backLink = document.getElementById("backLinkDynamic");
+        const wordCountDisplay = document.getElementById("wordCountDisplay");
+        const readTimeDisplay = document.getElementById("readTimeDisplay");
+        const tabWrite = document.getElementById("tabWrite");
+        const tabPreview = document.getElementById("tabPreview");
+        const writePane = document.getElementById("writePane");
+        const previewPane = document.getElementById("previewPane");
+        const previewContent = document.getElementById("previewContent");
+
+        let blogs = JSON.parse(localStorage.getItem("blogs")) || [];
+        const currentBlog = blogs.find(b => String(b.id) === String(blogId));
+
+        function updateCaptionPreview() {
+            const cap = imageCaptionInput.value.trim();
+            if (cap && imagePreviewContainer.style.display !== "none") {
+                imagePreviewCaptionText.textContent = cap;
+                imagePreviewCaption.style.display = "flex";
+            } else {
+                imagePreviewCaption.style.display = "none";
+            }
+        }
+        imageCaptionInput.addEventListener("input", updateCaptionPreview);
+
+        if (!currentBlog) {
+            window.showToast("Story not found!", "error");
+            setTimeout(() => { window.location.href = "index.html"; }, 1000);
+        } else {
+            titleInput.value = currentBlog.title || "";
+            authorInput.value = currentBlog.author || "";
+            categoryInput.value = currentBlog.category || "Technology";
+            tagsInput.value = currentBlog.tags ? currentBlog.tags.join(", ") : currentBlog.category;
+            imageInput.value = currentBlog.image || "";
+            imageCaptionInput.value = currentBlog.imageCaption || "";
+            contentInput.value = currentBlog.content || "";
+
+            if (currentBlog.image) {
+                imagePreview.src = currentBlog.image;
+                imagePreviewContainer.style.display = "block";
+                updateCaptionPreview();
+            }
+
+            backLink.href = `view.html?id=${currentBlog.id}`;
+            cancelBtn.onclick = () => { window.location.href = `view.html?id=${currentBlog.id}`; };
+            updateContentStats();
+        }
+
+        // Tab Toggle (Write vs Preview)
+        tabWrite.addEventListener("click", () => {
+            tabWrite.classList.add("active");
+            tabPreview.classList.remove("active");
+            writePane.style.display = "block";
+            previewPane.style.display = "none";
+        });
+
+        tabPreview.addEventListener("click", () => {
+            tabPreview.classList.add("active");
+            tabWrite.classList.remove("active");
+            writePane.style.display = "none";
+            previewPane.style.display = "block";
+
+            const md = contentInput.value.trim();
+            if (md) {
+                previewContent.innerHTML = marked.parse(md);
+                previewContent.querySelectorAll("pre code").forEach(el => {
+                    hljs.highlightElement(el);
+                });
+            } else {
+                previewContent.innerHTML = '<p style="color: #94a3b8; font-style: italic;">No content to preview.</p>';
+            }
+        });
+
+        // Markdown Toolbar Actions
+        document.querySelectorAll(".tool-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const syntax = btn.getAttribute("data-syntax");
+                const isWrap = btn.getAttribute("data-wrap") === "true";
+                const offset = parseInt(btn.getAttribute("data-cursor-offset") || "0", 10);
+
+                const start = contentInput.selectionStart;
+                const end = contentInput.selectionEnd;
+                const selectedText = contentInput.value.substring(start, end);
+
+                let replacement = isWrap ? `${syntax}${selectedText || "text"}${syntax}` : `${syntax}${selectedText}`;
+                if (offset > 0) replacement = syntax;
+
+                contentInput.setRangeText(replacement, start, end, "select");
+                contentInput.focus();
+                updateContentStats();
+            });
+        });
+
+        // Preset Cover Chips
+        document.querySelectorAll(".preset-chip").forEach(chip => {
+            chip.addEventListener("click", () => {
+                const url = chip.getAttribute("data-url");
+                imageInput.value = url;
+                imagePreview.src = url;
+                imagePreviewContainer.style.display = "block";
+                updateCaptionPreview();
+            });
+        });
+
+        // Image input preview
+        imageInput.addEventListener("input", function() {
+            const url = this.value.trim();
+            if (url) {
+                imagePreview.src = url;
+                imagePreviewContainer.style.display = "block";
+                updateCaptionPreview();
+            } else {
+                imagePreviewContainer.style.display = "none";
+            }
+        });
+
+        function updateContentStats() {
+            const text = contentInput.value.trim();
+            const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+            const readMinutes = Math.max(1, Math.ceil(words / 200));
+            wordCountDisplay.innerHTML = `<i class="fa-solid fa-font"></i> ${words} word${words === 1 ? '' : 's'}`;
+            readTimeDisplay.innerHTML = `<i class="fa-regular fa-clock"></i> ~${readMinutes} min read`;
+        }
+
+        contentInput.addEventListener("input", updateContentStats);
+
+        // Save Changes
+        document.getElementById("editBlogForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const title = titleInput.value.trim();
+            const author = authorInput.value.trim();
+            const category = categoryInput.value;
+            const rawTags = tagsInput.value.split(",").map(t => t.trim().replace(/^#/, "")).filter(Boolean);
+            const image = imageInput.value.trim();
+            const imageCaption = imageCaptionInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !author || !category || !image || !content) {
+                window.showToast("Please fill in all required fields.", "error");
+                return;
+            }
+
+            const index = blogs.findIndex(b => String(b.id) === String(blogId));
+            if (index !== -1) {
+                blogs[index] = {
+                    ...blogs[index],
+                    title: title,
+                    author: author,
+                    category: category,
+                    tags: rawTags.length > 0 ? rawTags : [category],
+                    image: image,
+                    imageCaption: imageCaption,
+                    content: content
+                };
+
+                localStorage.setItem("blogs", JSON.stringify(blogs));
+
+                // Cloud Firestore Async Synchronization
+                if (typeof window.saveStoryToFirestore === "function") {
+                    window.saveStoryToFirestore(blogs[index]).catch(e => console.warn("Firestore background save error:", e));
+                }
+
+                window.showToast("Story updated successfully!", "success");
+                setTimeout(() => {
+                    window.location.href = `view.html?id=${blogId}`;
+                }, 500);
+            }
+        });
+    </script>
+</body>
+
+</html>

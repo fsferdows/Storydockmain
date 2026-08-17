@@ -1,0 +1,192 @@
+{
+  "entities": {
+    "Story": {
+      "title": "Story",
+      "description": "An article or blog post published on the StoryDock platform.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique story identifier.",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the published story.",
+          "maxLength": 200,
+          "minLength": 3
+        },
+        "content": {
+          "type": "string",
+          "description": "Markdown or text content of the article.",
+          "maxLength": 50000,
+          "minLength": 10
+        },
+        "author": {
+          "type": "string",
+          "description": "Display name of the author.",
+          "maxLength": 100
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Unique user ID of the author.",
+          "maxLength": 128
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Email of the author.",
+          "maxLength": 128
+        },
+        "authorAvatar": {
+          "type": "string",
+          "description": "URL to the author's avatar.",
+          "maxLength": 500
+        },
+        "category": {
+          "type": "string",
+          "description": "Category or topic tag.",
+          "maxLength": 50
+        },
+        "date": {
+          "type": "string",
+          "description": "Publication date display string.",
+          "maxLength": 60
+        },
+        "image": {
+          "type": "string",
+          "description": "Hero banner image URL.",
+          "maxLength": 500
+        },
+        "imageCaption": {
+          "type": "string",
+          "description": "Photo caption or credit attribution.",
+          "maxLength": 200
+        },
+        "likes": {
+          "type": "number",
+          "description": "Count of reader claps/likes."
+        },
+        "views": {
+          "type": "number",
+          "description": "Estimated view count."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the story was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the story was last modified."
+        }
+      },
+      "required": ["id", "title", "content", "author", "authorId", "category"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Public profile information for a StoryDock author.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User ID matching request.auth.uid.",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name.",
+          "maxLength": 100,
+          "minLength": 2
+        },
+        "role": {
+          "type": "string",
+          "description": "Professional title or tagline.",
+          "maxLength": 150
+        },
+        "bio": {
+          "type": "string",
+          "description": "Author biography.",
+          "maxLength": 2000
+        },
+        "avatar": {
+          "type": "string",
+          "description": "Avatar URL.",
+          "maxLength": 500
+        },
+        "handle": {
+          "type": "string",
+          "description": "User handle.",
+          "maxLength": 50
+        },
+        "location": {
+          "type": "string",
+          "description": "Geographic location.",
+          "maxLength": 100
+        },
+        "website": {
+          "type": "string",
+          "description": "Personal website or portfolio URL.",
+          "maxLength": 300
+        }
+      },
+      "required": ["id", "name"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Discussion comment on a story.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique comment identifier.",
+          "maxLength": 128
+        },
+        "storyId": {
+          "type": "string",
+          "description": "ID of the parent story.",
+          "maxLength": 128
+        },
+        "author": {
+          "type": "string",
+          "description": "Author name.",
+          "maxLength": 100
+        },
+        "authorId": {
+          "type": "string",
+          "description": "Author user ID.",
+          "maxLength": 128
+        },
+        "authorAvatar": {
+          "type": "string",
+          "description": "Author avatar URL.",
+          "maxLength": 500
+        },
+        "text": {
+          "type": "string",
+          "description": "Comment message body.",
+          "maxLength": 2000,
+          "minLength": 1
+        },
+        "date": {
+          "type": "string",
+          "description": "Timestamp display string.",
+          "maxLength": 60
+        }
+      },
+      "required": ["id", "storyId", "author", "authorId", "text"]
+    }
+  },
+  "firestore": {
+    "/stories/{storyId}": {
+      "schema": "Story",
+      "description": "Published articles and stories collection."
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents."
+    },
+    "/stories/{storyId}/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Threaded comments for an individual story."
+    }
+  }
+}

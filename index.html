@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryDock — Write. Share. Inspire.</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- Marked for Markdown Processing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo" onclick="window.location.href='index.html'">
+                <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                <div class="logo-content">
+                    <h2>StoryDock</h2>
+                    <p>Write. Share. Inspire.</p>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="#blogs">Stories</a></li>
+                <li><a href="create.html">Create Story</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+                <li><a href="project.html">Architecture</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-icon-btn" onclick="openAnalyticsModal()" title="Platform Analytics & Metrics">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </button>
+
+                <button id="themeBtn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="menu-wrapper">
+                    <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div id="floatingMenu" class="floating-menu" aria-hidden="true">
+                        <div class="floating-menu-header">
+                            <h3>Quick Access</h3>
+                            <button id="closeMenuBtn" class="close-menu-btn" aria-label="Close menu">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <a href="index.html" class="menu-link"><i class="fa-solid fa-house"></i> Home Feed</a>
+                        <a href="#blogs" class="menu-link"><i class="fa-solid fa-newspaper"></i> Browse Stories</a>
+                        <a href="create.html" class="menu-link"><i class="fa-solid fa-pen-to-square"></i> Create New Story</a>
+                        <a href="profile.html" class="menu-link"><i class="fa-solid fa-id-card"></i> Author Profile</a>
+                        <a href="javascript:void(0)" onclick="openAnalyticsModal(); closeMenu();" class="menu-link"><i class="fa-solid fa-chart-pie"></i> Analytics & Insights</a>
+                        <a href="project.html" class="menu-link"><i class="fa-solid fa-book-bookmark"></i> System Blueprint</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section with Platform Metrics -->
+    <section class="hero">
+        <div class="hero-left">
+            <h1>Every Story Deserves To Be Heard.</h1>
+            <p>
+                Craft profound narratives, engineering insights, and cultural essays. Empowered by real-time Markdown, syntax highlighting, and reader analytics.
+            </p>
+            <div class="hero-actions">
+                <a href="create.html" class="btn" id="heroCreateBtn">
+                    <i class="fa-solid fa-feather-pointed"></i> Start Writing
+                </a>
+                <button onclick="openAnalyticsModal()" class="btn-secondary-hero">
+                    <i class="fa-solid fa-chart-simple"></i> View Analytics
+                </button>
+            </div>
+
+            <!-- Live Hero Metrics Bar -->
+            <div class="hero-metrics-strip">
+                <div class="hero-metric-item">
+                    <strong id="statTotalStories">5</strong>
+                    <span>Published Stories</span>
+                </div>
+                <div class="hero-metric-divider"></div>
+                <div class="hero-metric-item">
+                    <strong id="statTotalLikes">560</strong>
+                    <span>Reader Claps</span>
+                </div>
+                <div class="hero-metric-divider"></div>
+                <div class="hero-metric-item">
+                    <strong id="statTotalWords">2,840</strong>
+                    <span>Words Written</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800"
+                alt="StoryDock Hero Banner">
+        </div>
+    </section>
+
+    <!-- Search & Filter Control Center -->
+    <section class="search-section">
+        <div class="search-box-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search stories by title, author, keyword, tag, or content...">
+        </div>
+    </section>
+
+    <!-- Category & Discovery Filters -->
+    <section class="category-toolbar">
+        <div class="category" id="categoryFilters">
+            <span class="category-group-label"><i class="fa-solid fa-sliders"></i> Filter:</span>
+            <button class="category-btn active" data-category="All" id="filter-all"><i class="fa-solid fa-layer-group"></i> All Stories</button>
+            <button class="category-btn highlight-btn" data-category="Trending" id="filter-trending"><i class="fa-solid fa-fire text-red"></i> Trending</button>
+            <button class="category-btn highlight-btn" data-category="Newest" id="filter-newest"><i class="fa-solid fa-sparkles text-purple"></i> Newest</button>
+            <button class="category-btn highlight-btn" data-category="Bookmarks" id="filter-bookmarks"><i class="fa-solid fa-bookmark text-blue"></i> Saved Bookmarks</button>
+            <span class="category-divider"></span>
+            <button class="category-btn" data-category="Technology" id="filter-tech">Technology</button>
+            <button class="category-btn" data-category="Programming" id="filter-prog">Programming</button>
+            <button class="category-btn" data-category="Travel" id="filter-travel">Travel</button>
+            <button class="category-btn" data-category="Education" id="filter-edu">Education</button>
+            <button class="category-btn" data-category="Lifestyle" id="filter-life">Lifestyle</button>
+        </div>
+
+        <div class="sort-selector-container">
+            <label for="sortSelect"><i class="fa-solid fa-arrow-down-wide-short"></i> Sort by:</label>
+            <select id="sortSelect" class="sort-select">
+                <option value="newest">Newest First</option>
+                <option value="most-liked">Most Clapped</option>
+                <option value="quickest-read">Quickest Read (< 3 min)</option>
+                <option value="longest-read">Deep Reads (> 5 min)</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Blog Container -->
+    <section
+        class="blog-container"
+        id="blogs">
+    </section>
+
+    <!-- Empty State -->
+    <div
+        class="empty"
+        id="empty"
+        style="display: none;">
+        <i class="fa-solid fa-book-open"></i>
+        <h2>No Stories Found</h2>
+        <p>No published articles matched your search filter criteria.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 18px;">
+            <button onclick="document.getElementById('searchInput').value=''; searchQuery=''; filterAndDisplayBlogs();" class="btn-secondary-hero">Clear Search Filter</button>
+            <a href="create.html" class="btn">Write a New Story</a>
+        </div>
+    </div>
+
+    <!-- Sticky Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top" title="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <img src="assets/images/logo.svg" alt="StoryDock Logo">
+                    <div class="logo-content">
+                        <h2>StoryDock</h2>
+                        <p>Write. Share. Inspire.</p>
+                    </div>
+                </div>
+                <p class="footer-desc">A modern, resilient publishing ecosystem built with standard web architecture, responsive design, and intuitive client-side persistence.</p>
+            </div>
+
+            <div class="footer-newsletter">
+                <h3><i class="fa-regular fa-envelope-open"></i> Subscribe to StoryDock Dispatch</h3>
+                <p>Join over 10,000+ developers and thinkers receiving weekly curated technology articles, design patterns, and life essays.</p>
+                <form id="newsletterForm" class="newsletter-form">
+                    <div class="newsletter-input-group">
+                        <i class="fa-regular fa-envelope newsletter-icon"></i>
+                        <input type="email" id="newsletterEmail" placeholder="Enter your email address..." required>
+                        <button type="submit" class="newsletter-submit-btn" id="newsletterSubmitBtn">
+                            <span>Subscribe</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div id="newsletterMsg" class="newsletter-feedback"></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="#blogs">Stories</a>
+                <a href="create.html">Write Story</a>
+                <a href="javascript:void(0)" onclick="openAnalyticsModal()">Platform Insights</a>
+                <a href="project.html">Architecture Blueprint</a>
+            </div>
+            <p id="contact">
+                © 2026 StoryDock Platform. Built for University Submission.
+            </p>
+        </div>
+    </footer>
+
+    <script src="assets/js/firebase-service.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>
